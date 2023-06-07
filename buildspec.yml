@@ -3,14 +3,15 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - $(aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 541816666728.dkr.ecr.ap-southeast-1.amazonaws.com)
+      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 541816666728.dkr.ecr.ap-southeast-1.amazonaws.com
   build:
     commands:
-      - docker build -t invicta_fastapi_ecr:latest .
-      - docker tag invicta_fastapi_ecr:latest 541816666728.dkr.ecr.ap-southeast-1.amazonaws.com/invicta_fastapi_ecr:latest
+      - docker build -t 541816666728.dkr.ecr.ap-southeast-1.amazonaws.com/invicta_fastapi_ecr:latest .
+      - docker tag 541816666728.dkr.ecr.ap-southeast-1.amazonaws.com/invicta_fastapi_ecr:latest 541816666728.dkr.ecr.ap-southeast-1.amazonaws.com/invicta_fastapi_ecr:latest
   post_build:
     commands:
       - docker push 541816666728.dkr.ecr.ap-southeast-1.amazonaws.com/invicta_fastapi_ecr:latest
-      - printf '[{"name":<TASK_DEFINITION_NAME>,"imageUri":"%s"}]' 541816666728.dkr.ecr.ap-southeast-1.amazonaws.com/invicta_fastapi_ecr:latest > imagedefinitions.json
+      - printf '[{"name":"invicta-fastapi-td","imageUri":"%s"}]' 
+      541816666728.dkr.ecr.ap-southeast-1.amazonaws.com/invicta_fastapi_ecr:latest > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
